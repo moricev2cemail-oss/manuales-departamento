@@ -17,6 +17,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { display: flex; height: 100vh; background-color: var(--bg-primary); color: var(--text-main); }
 
+        /* Panel Lateral */
         .sidebar { width: 260px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 24px 16px; }
         .brand { font-size: 16px; font-weight: 600; margin-bottom: 24px; padding-left: 8px; display: flex; align-items: center; gap: 8px; }
         .search-box { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; background: #fff; margin-bottom: 20px; font-size: 14px; outline: none; }
@@ -27,33 +28,53 @@
         .filter-btn:hover, .filter-btn.active { background-color: var(--border); }
         .filter-btn.active { font-weight: 600; }
 
+        /* Botón Añadir abajo en el lateral */
+        .admin-section { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border); }
+        .btn-add { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 10px; background-color: #2383e2; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; }
+        .btn-add:hover { background-color: #1a6fc2; }
+
+        /* Listado Central */
         .notes-list-pane { width: 320px; border-right: 1px solid var(--border); display: flex; flex-direction: column; background: #fff; }
         .pane-header { padding: 24px 20px 12px 20px; font-size: 18px; font-weight: 700; }
         .notes-container { flex: 1; overflow-y: auto; padding: 0 12px; }
-        .note-card { padding: 12px 8px; border-radius: 6px; cursor: pointer; margin-bottom: 4px; border-bottom: 1px solid #fcfcfc; transition: background 0.15s ease; }
+        .note-card { padding: 12px 8px; border-radius: 6px; cursor: pointer; margin-bottom: 4px; border-bottom: 1px solid #fcfcfc; transition: background 0.15s ease; position: relative; }
         .note-card:hover { background-color: var(--bg-sidebar); }
         .note-card.active { background-color: #f0f0ee; }
-        .note-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .note-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 20px; }
         .note-meta { font-size: 12px; color: var(--text-muted); display: flex; gap: 8px; align-items: center; }
         
+        .btn-delete { position: absolute; right: 8px; top: 12px; border: none; background: transparent; color: #e03e3e; cursor: pointer; display: none; font-size: 14px; }
+        .note-card:hover .btn-delete { display: block; }
+
         .tag { padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; text-transform: uppercase; }
         .tag-noticias { background: #faecec; color: #e03e3e; }
         .tag-procedimientos { background: #eef3fc; color: #1d4ed8; }
         .tag-manuales { background: #edf7ed; color: #1e4620; }
 
+        /* Visor de Lectura / Formulario */
         .content-pane { flex: 1; overflow-y: auto; padding: 60px 80px; background: #fff; }
-        .content-container { max-width: 700px; margin: 0 auto; animation: fadeIn 0.2s ease; }
+        .content-container, .form-container { max-width: 700px; margin: 0 auto; animation: fadeIn 0.2s ease; }
         .doc-category { font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
         .doc-title { font-size: 40px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px; }
         .doc-date { font-size: 14px; color: var(--text-muted); margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
         .doc-body { font-size: 16px; line-height: 1.6; color: #2f2e2b; white-space: pre-line; }
         .empty-state { display: flex; height: 100%; align-items: center; justify-content: center; color: var(--text-muted); font-size: 15px; text-align: center; line-height: 1.5; }
 
+        /* Estilos del Formulario */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: var(--text-main); }
+        .form-control { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; outline: none; }
+        .form-control:focus { border-color: var(--accent); }
+        textarea.form-control { resize: vertical; min-height: 200px; font-family: inherit; }
+        .btn-submit { padding: 10px 20px; background-color: #1e4620; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .btn-submit:hover { background-color: #143016; }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
+    <!-- Panel Lateral Izquierdo -->
     <div class="sidebar">
         <div class="brand">🚀 Centro de Control</div>
         <input type="text" id="search" class="search-box" placeholder="Buscar en manuales...">
@@ -63,48 +84,48 @@
         <button class="filter-btn" onclick="filtrarCategoria('Noticias', this)">📰 Noticias</button>
         <button class="filter-btn" onclick="filtrarCategoria('Procedimientos', this)">⚙️ Procedimientos</button>
         <button class="filter-btn" onclick="filtrarCategoria('Manuales', this)">📘 Manuales</button>
+
+        <div class="admin-section">
+            <button class="btn-add" onclick="mostrarFormulario()">➕ Añadir Documento</button>
+        </div>
     </div>
 
+    <!-- Panel Central: Listado -->
     <div class="notes-list-pane">
         <div class="pane-header" id="list-title">Todos los documentos</div>
         <div class="notes-container" id="notes-list"></div>
     </div>
 
+    <!-- Panel Derecho: Contenido Variable -->
     <div class="content-pane" id="content-pane">
-        <div class="empty-state">Selecciona un documento para visualizar su contenido.<br>Usa el buscador para filtrar palabras clave.</div>
+        <div class="empty-state">Selecciona un documento para visualizar su contenido.<br>Usa el botón "Añadir Documento" para crear contenido sin tocar código.</div>
     </div>
 
     <script>
-        // ==========================================
-        //  BASE DE DATOS DE DOCUMENTOS (FÁCIL EDITAR)
-        // ==========================================
-        const DATA_DOCUMENTOS = [
+        const DOCUMENTOS_PREDEFINIDOS = [
             {
                 id: 1,
                 titulo: "Manual de Bienvenida al Departamento",
                 categoria: "Manuales",
-                fecha: "01 de Julio, 2026",
-                contenido: "Bienvenido al equipo.\n\nEste manual contiene las pautas básicas para tus primeros días en el departamento:\n\n1. Horarios y accesos: El horario base es de 8:00 a 17:00.\n2. Canales de comunicación: Usamos el correo interno para comunicaciones formales.\n3. Sistemas clave: Solicita tus credenciales con el equipo técnico usando el formato oficial."
+                fecha: "01 Jul 2026",
+                contenido: "Bienvenido al equipo de trabajo.\n\nEste espacio local te permite consultar noticias internos de manera privada y veloz."
             },
             {
                 id: 2,
                 titulo: "Procedimiento para Reporte de Fallas de Red",
                 categoria: "Procedimientos",
-                fecha: "28 de Junio, 2026",
-                contenido: "Objetivo: Resolver incidentes de conectividad de forma estructurada.\n\nPasos a seguir:\n1. Verificar si el fallo afecta a un solo equipo o a todo el piso.\n2. Tomar captura de pantalla del código de error.\n3. Enviar un correo a soporte@empresa.local con la etiqueta [FALLO RED] en el asunto."
-            },
-            {
-                id: 3,
-                titulo: "Cambio en la política de teletrabajo",
-                categoria: "Noticias",
-                fecha: "15 de Junio, 2026",
-                contenido: "Estimado equipo,\n\nA partir del próximo mes, se habilitará un esquema híbrido flexible. Cada miembro podrá coordinar con su supervisor directo los 2 días de trabajo remoto semanales."
+                fecha: "28 Jun 2026",
+                contenido: "Objetivo: Resolver incidentes de conectividad de forma estructurada.\n\nPasos a seguir:\n1. Verificar si el fallo afecta a un solo equipo o a todo el piso.\n2. Tomar captura de pantalla del código de error.\n3. Enviar un correo a soporte con la etiqueta [FALLO RED]."
             }
         ];
 
-        // Lógica interna de la aplicación
+        let DATA_DOCUMENTOS = JSON.parse(localStorage.getItem('departamento_docs')) || DOCUMENTOS_PREDEFINIDOS;
         let categoriaActual = 'todos';
         let busquedaActual = '';
+
+        function guardarEnAlmacenamiento() {
+            localStorage.setItem('departamento_docs', JSON.stringify(DATA_DOCUMENTOS));
+        }
 
         function renderizarLista() {
             const container = document.getElementById('notes-list');
@@ -125,13 +146,13 @@
             filtrados.forEach(doc => {
                 const card = document.createElement('div');
                 card.className = 'note-card';
-                card.onclick = () => mostrarDocumento(doc.id, card);
                 card.innerHTML = `
-                    <div class="note-title">${doc.titulo}</div>
-                    <div class="note-meta">
+                    <div class="note-title" onclick="mostrarDocumento(${doc.id}, this.parentNode)">${doc.titulo}</div>
+                    <div class="note-meta" onclick="mostrarDocumento(${doc.id}, this.parentNode)">
                         <span class="tag tag-${doc.categoria.toLowerCase()}">${doc.categoria}</span>
                         <span>${doc.fecha}</span>
                     </div>
+                    <button class="btn-delete" onclick="eliminarDocumento(${doc.id}, event)">🗑️</button>
                 `;
                 container.appendChild(card);
             });
@@ -149,10 +170,72 @@
                     <div class="content-container">
                         <div class="doc-category">${doc.categoria}</div>
                         <h1 class="doc-title">${doc.titulo}</h1>
-                        <div class="doc-date">Publicado el ${doc.fecha}</div>
+                        <div class="doc-date">Publicado: ${doc.fecha}</div>
                         <div class="doc-body">${doc.contenido}</div>
                     </div>
                 `;
+            }
+        }
+
+        function mostrarFormulario() {
+            document.querySelectorAll('.note-card').forEach(c => c.classList.remove('active'));
+            const visor = document.getElementById('content-pane');
+            visor.innerHTML = `
+                <div class="form-container">
+                    <h2 style="margin-bottom: 24px; font-size: 28px; font-weight: 700;">Nuevo Documento</h2>
+                    <form id="doc-form" onsubmit="agregarNuevoDocumento(event)">
+                        <div class="form-group">
+                            <label>Título del Documento</label>
+                            <input type="text" id="form-titulo" class="form-control" placeholder="Ej: Procedimiento de reporte de fábrica" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Categoría</label>
+                            <select id="form-categoria" class="form-control" required>
+                                <option value="Noticias">📰 Noticias</option>
+                                <option value="Procedimientos">⚙️ Procedimientos</option>
+                                <option value="Manuales">📘 Manuales</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Contenido del Documento</label>
+                            <textarea id="form-contenido" class="form-control" placeholder="Escribe aquí el desarrollo del texto..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit">💾 Guardar en el Sistema</button>
+                    </form>
+                </div>
+            `;
+        }
+
+        function agregarNuevoDocumento(event) {
+            event.preventDefault();
+            const titulo = document.getElementById('form-titulo').value;
+            const categoria = document.getElementById('form-categoria').value;
+            const contenido = document.getElementById('form-contenido').value;
+            
+            const opciones = { day: '2-digit', month: 'short', year: 'numeric' };
+            const fechaActual = new Date().toLocaleDateString('es-ES', opciones).replace(/ de /g, ' ');
+
+            const nuevoDoc = {
+                id: Date.now(),
+                titulo: titulo,
+                categoria: categoria,
+                fecha: fechaActual,
+                contenido: contenido
+            };
+
+            DATA_DOCUMENTOS.unshift(nuevoDoc);
+            guardarEnAlmacenamiento();
+            renderizarLista();
+            mostrarDocumento(nuevoDoc.id);
+        }
+
+        function eliminarDocumento(id, event) {
+            event.stopPropagation();
+            if(confirm('¿Estás seguro de que deseas eliminar este documento?')) {
+                DATA_DOCUMENTOS = DATA_DOCUMENTOS.filter(d => d.id !== id);
+                guardarEnAlmacenamiento();
+                renderizarLista();
+                document.getElementById('content-pane').innerHTML = `<div class="empty-state">Documento eliminado.</div>`;
             }
         }
 
